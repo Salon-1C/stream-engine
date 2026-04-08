@@ -1,0 +1,4 @@
+services:
+  mediamtx:
+    volumes:
+      - ./configs/mediamtx.ngrok.yml:/mediamtx.yml:ro

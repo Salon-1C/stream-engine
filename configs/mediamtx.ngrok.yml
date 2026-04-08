@@ -1,0 +1,29 @@
+logLevel: info
+
+authMethod: http
+authHTTPAddress: http://host.docker.internal:8080/auth/mediamtx
+
+rtmp: yes
+rtmpAddress: :1935
+
+webrtc: yes
+webrtcAddress: :8889
+webrtcAllowOrigins:
+  - "*"
+# Mismo host que en MEDIAMTX_HTTP_URL pero SIN https:// (ej. abc123.ngrok-free.app).
+webrtcAdditionalHosts:
+  - beff-181-61-247-151.ngrok-free.app
+webrtcICEServers2:
+  - url: stun:stun.l.google.com:19302
+  # Recomendado para acceso remoto estable: agrega un TURN server.
+  # - url: turn:TURN_HOST:3478?transport=udp
+  #   username: TURN_USERNAME
+  #   password: TURN_PASSWORD
+  # - url: turn:TURN_HOST:3478?transport=tcp
+  #   username: TURN_USERNAME
+  #   password: TURN_PASSWORD
+
+hls: no
+
+paths:
+  all:

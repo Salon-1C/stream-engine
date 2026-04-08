@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stream Engine Demo</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        margin: 0;
+        padding: 2rem;
+      }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      input, button {
+        padding: 0.6rem;
+        margin-right: 0.4rem;
+      }
+      video {
+        width: 100%;
+        margin-top: 1rem;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        background: black;
+      }
+      .status {
+        margin-top: 0.8rem;
+        color: #94a3b8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>WebRTC Streaming Demo</h1>
+      <p>Enter stream path as <code>/live/&lt;stream_key&gt;</code></p>
+      <input id="streamPath" value="" placeholder="/live/your_key" />
+      <button id="startBtn">Start</button>
+      <button id="stopBtn">Stop</button>
+      <div class="status" id="status">Idle</div>
+      <video id="video" autoplay playsinline controls muted></video>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+  </html>

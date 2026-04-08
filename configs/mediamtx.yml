@@ -1,0 +1,19 @@
+logLevel: info
+
+authMethod: http
+authHTTPAddress: http://host.docker.internal:8080/auth/mediamtx
+
+rtmp: yes
+rtmpAddress: :1935
+
+webrtc: yes
+webrtcAddress: :8889
+webrtcAllowOrigins:
+  - "*"
+webrtcICEServers2:
+  - url: stun:stun.l.google.com:19302
+
+hls: no
+
+paths:
+  all:

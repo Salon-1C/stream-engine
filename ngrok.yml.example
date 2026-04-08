@@ -1,0 +1,9 @@
+version: "2"
+authtoken: TU_AUTHTOKEN
+tunnels:
+  app8080:
+    proto: http
+    addr: 8080
+  media8889:
+    proto: http
+    addr: 8889
