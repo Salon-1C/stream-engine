@@ -1,0 +1,54 @@
+name: Build and Push Docker image to ECR
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # required for OIDC
+  contents: read
+
+env:
+  AWS_REGION:      us-east-2
+  ECR_REPOSITORY:  stream-engine
+  ECS_CLUSTER:     blume
+  ECS_SERVICE:     stream-engine
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag and push image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          IMAGE_BASE="$REGISTRY/${ECR_REPOSITORY}"
+          docker build -t "${IMAGE_BASE}:${IMAGE_TAG}" -t "${IMAGE_BASE}:latest" .
+          docker push "${IMAGE_BASE}:${IMAGE_TAG}"
+          docker push "${IMAGE_BASE}:latest"
+          echo "Pushed ${IMAGE_BASE}:${IMAGE_TAG} and ${IMAGE_BASE}:latest"
+
+      - name: Force ECS redeployment
+        run: |
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service  "$ECS_SERVICE" \
+            --force-new-deployment \
+            --no-cli-pager
+          echo "Triggered rolling redeployment of $ECS_SERVICE in cluster $ECS_CLUSTER"
