@@ -1,0 +1,21 @@
+logLevel: info
+
+# Inside the Docker Compose network the Go server is reachable at
+# http://stream-engine:8080 (service name), not host.docker.internal.
+authMethod: http
+authHTTPAddress: http://stream-engine:8080/auth/mediamtx
+
+rtmp: yes
+rtmpAddress: :1935
+
+webrtc: yes
+webrtcAddress: :8889
+webrtcAllowOrigins:
+  - "*"
+webrtcICEServers2:
+  - url: stun:stun.l.google.com:19302
+
+hls: no
+
+paths:
+  all:

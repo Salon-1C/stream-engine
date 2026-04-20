@@ -1,11 +1,9 @@
 # ── Stage 1: build ────────────────────────────────────────────────────────────
-FROM golang:1.21-alpine AS build
+FROM golang:1.26-alpine AS build
 
 WORKDIR /app
 
 COPY go.mod .
-# go.sum may not exist yet if there are no external dependencies
-COPY go.su[m] .
 
 RUN go mod download
 
