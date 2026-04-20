@@ -17,5 +17,10 @@ webrtcICEServers2:
 
 hls: no
 
+record: yes
+recordPath: /recordings/%path/%Y-%m-%d_%H-%M-%S
+recordFormat: fmp4
+recordPartDuration: 5s
+
 paths:
   all:
