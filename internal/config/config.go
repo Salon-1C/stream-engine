@@ -1,14 +1,14 @@
 package config
 
 import (
-	"errors"
 	"fmt"
 	"os"
 )
 
 type Config struct {
-	HTTPListenAddr   string
-	MediaMTXHTTPURL  string
+	HTTPListenAddr  string
+	MediaMTXHTTPURL string
+	// AllowedStreamKey is optional. When empty, any /live/<key> path is accepted.
 	AllowedStreamKey string
 }
 
@@ -17,10 +17,6 @@ func Load() (Config, error) {
 		HTTPListenAddr:   getEnv("HTTP_LISTEN_ADDR", ":8080"),
 		MediaMTXHTTPURL:  getEnv("MEDIAMTX_HTTP_URL", "http://localhost:8889"),
 		AllowedStreamKey: os.Getenv("STREAM_KEY"),
-	}
-
-	if cfg.AllowedStreamKey == "" {
-		return Config{}, errors.New("STREAM_KEY is required")
 	}
 
 	if cfg.MediaMTXHTTPURL == "" {
