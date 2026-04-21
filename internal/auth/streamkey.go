@@ -17,9 +17,14 @@ func (v StreamKeyValidator) ValidPath(path string) bool {
 	if len(parts) != 2 || parts[0] != "live" || parts[1] == "" {
 		return false
 	}
+	// Strip the _rtc suffix used by the FFmpeg-transcoded WebRTC copy.
+	key := strings.TrimSuffix(parts[1], "_rtc")
+	if key == "" {
+		return false
+	}
 	// When no specific key is configured, accept any non-empty stream key.
 	if v.allowed == "" {
 		return true
 	}
-	return parts[1] == v.allowed
+	return key == v.allowed
 }

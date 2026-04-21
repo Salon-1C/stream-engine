@@ -39,8 +39,11 @@ func (h Handler) CreateViewerSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Point WebRTC clients at the _rtc path where FFmpeg re-publishes the
+	// stream with Opus audio (transcoded from RTMP AAC).
+	rtcPath := strings.TrimPrefix(path, "/") + "_rtc"
 	res := ViewerSessionResponse{
-		WHEPURL: h.mediaBaseURL + "/" + strings.TrimPrefix(path, "/") + "/whep",
+		WHEPURL: h.mediaBaseURL + "/" + rtcPath + "/whep",
 	}
 
 	writeJSON(w, res, http.StatusOK)

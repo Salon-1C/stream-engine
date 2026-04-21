@@ -1,12 +1,13 @@
 logLevel: info
 
-# Inside the Docker Compose network the Go server is reachable at
-# http://stream-engine:8080 (service name), not host.docker.internal.
 authMethod: http
 authHTTPAddress: http://stream-engine:8080/auth/mediamtx
 
 rtmp: yes
 rtmpAddress: :1935
+
+rtsp: yes
+rtspAddress: :8554
 
 webrtc: yes
 webrtcAddress: :8889
@@ -17,10 +18,31 @@ webrtcICEServers2:
 
 hls: no
 
-record: yes
-recordPath: /recordings/%path/%Y-%m-%d_%H-%M-%S
-recordFormat: fmp4
-recordPartDuration: 5s
+pathDefaults:
+  record: no
 
 paths:
+  # ── RTMP source paths (published by OBS with AAC audio) ──────────────────
+  # Pattern matches hex stream keys like live/d899feb16dd24b
+  "~^live/[a-zA-Z0-9]+$":
+    record: yes
+    recordPath: /recordings/%path/%Y-%m-%d_%H-%M-%S
+    recordFormat: fmp4
+    recordPartDuration: 5s
+    # Spawn FFmpeg to transcode AAC → Opus and re-publish for WebRTC clients.
+    # MTX_PATH = "live/<key>"; the _rtc path is the WebRTC-compatible copy.
+    runOnReady: >-
+      ffmpeg
+      -rtsp_transport tcp
+      -i rtsp://127.0.0.1:8554/${MTX_PATH}
+      -c:v copy
+      -c:a libopus -b:a 128k -ar 48000 -ac 2
+      -f rtsp rtsp://127.0.0.1:8554/${MTX_PATH}_rtc
+    runOnReadyRestart: yes
+
+  # ── Transcoded paths (FFmpeg re-publish with Opus audio) ─────────────────
+  "~^live/[a-zA-Z0-9]+_rtc$":
+    record: no
+
   all:
+    record: no
