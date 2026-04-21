@@ -10,6 +10,8 @@ type Config struct {
 	MediaMTXHTTPURL string
 	// AllowedStreamKey is optional. When empty, any /live/<key> path is accepted.
 	AllowedStreamKey string
+	RabbitMQURL      string
+	RabbitMQQueue    string
 }
 
 func Load() (Config, error) {
@@ -17,6 +19,8 @@ func Load() (Config, error) {
 		HTTPListenAddr:   getEnv("HTTP_LISTEN_ADDR", ":8080"),
 		MediaMTXHTTPURL:  getEnv("MEDIAMTX_HTTP_URL", "http://localhost:8889"),
 		AllowedStreamKey: os.Getenv("STREAM_KEY"),
+		RabbitMQURL:      os.Getenv("RABBITMQ_URL"),
+		RabbitMQQueue:    getEnv("RABBITMQ_QUEUE", "recordings.ready"),
 	}
 
 	if cfg.MediaMTXHTTPURL == "" {
