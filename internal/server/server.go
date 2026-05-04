@@ -37,7 +37,7 @@ func New(cfg config.Config) *Server {
 
 	return &Server{
 		cfg:       cfg,
-		authz:     auth.NewMediaMTXAuthHandler(validator),
+		authz:     auth.NewMediaMTXAuthHandler(validator, cfg.JWTSecret),
 		signaling: signaling.New(cfg.MediaMTXHTTPURL, validator, stats),
 		publisher: publisher,
 	}

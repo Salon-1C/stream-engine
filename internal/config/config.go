@@ -12,6 +12,8 @@ type Config struct {
 	AllowedStreamKey string
 	RabbitMQURL      string
 	RabbitMQQueue    string
+	// JWTSecret must match the JWT_SECRET used by blume_business_logic_ms.
+	JWTSecret string
 }
 
 func Load() (Config, error) {
@@ -21,6 +23,7 @@ func Load() (Config, error) {
 		AllowedStreamKey: os.Getenv("STREAM_KEY"),
 		RabbitMQURL:      os.Getenv("RABBITMQ_URL"),
 		RabbitMQQueue:    getEnv("RABBITMQ_QUEUE", "recordings.ready"),
+		JWTSecret:        os.Getenv("JWT_SECRET"),
 	}
 
 	if cfg.MediaMTXHTTPURL == "" {
