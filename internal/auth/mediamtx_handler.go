@@ -52,7 +52,9 @@ func (h MediaMTXAuthHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
-		// Reject anything that is not HS256 (matches Java JwtTokenAdapter).
+		// Accept any HMAC variant (HS256, HS384, HS512) — Java's jjwt picks
+		// the algorithm automatically based on key length, so we only enforce
+		// the family, not the specific bit-size.
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
 		}
