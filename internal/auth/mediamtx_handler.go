@@ -12,6 +12,7 @@ type MediaMTXAuthRequest struct {
 	Action string `json:"action"`
 	Path   string `json:"path"`
 	Query  string `json:"query"` // MediaMTX forwards the client query string here
+	IP     string `json:"ip"`    // Client IP sent by MediaMTX in the webhook payload
 }
 
 type MediaMTXAuthHandler struct {
@@ -38,6 +39,13 @@ func (h MediaMTXAuthHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	// Path must still follow /live/<key> convention.
 	if !h.validator.ValidPath(payload.Path) {
 		http.Error(w, "forbidden: invalid path", http.StatusForbidden)
+		return
+	}
+
+	// Allow internal connections from the FFmpeg transcoder (127.0.0.1).
+	// These are spawned by MediaMTX itself via runOnReady and do not carry a JWT.
+	if payload.IP == "127.0.0.1" {
+		w.WriteHeader(http.StatusOK)
 		return
 	}
 
