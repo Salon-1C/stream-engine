@@ -42,8 +42,15 @@ func (h Handler) CreateViewerSession(w http.ResponseWriter, r *http.Request) {
 	// Point WebRTC clients at the _rtc path where FFmpeg re-publishes the
 	// stream with Opus audio (transcoded from RTMP AAC).
 	rtcPath := strings.TrimPrefix(path, "/") + "_rtc"
+	whepURL := h.mediaBaseURL + "/" + rtcPath + "/whep"
+
+	// Forward the JWT so MediaMTX includes it in the auth webhook query string.
+	if token := r.URL.Query().Get("token"); token != "" {
+		whepURL += "?token=" + token
+	}
+
 	res := ViewerSessionResponse{
-		WHEPURL: h.mediaBaseURL + "/" + rtcPath + "/whep",
+		WHEPURL: whepURL,
 	}
 
 	writeJSON(w, res, http.StatusOK)
