@@ -23,8 +23,8 @@ pathDefaults:
 
 paths:
   # ── RTMP source paths (published by OBS with AAC audio) ──────────────────
-  # Pattern matches hex stream keys like live/d899feb16dd24b
-  "~^live/[a-zA-Z0-9]+$":
+  # Pattern matches any stream key: hex, numeric, UUID with hyphens, etc.
+  "~^live/[a-zA-Z0-9_-]+$":
     record: yes
     recordPath: /recordings/%path/%Y-%m-%d_%H-%M-%S
     recordFormat: fmp4
@@ -43,7 +43,7 @@ paths:
       sh -c "b64=$(base64 -w0 \"${MTX_SEGMENT_PATH}\" 2>/dev/null || true); [ -n \"$b64\" ] && wget -qO- --header='Content-Type: application/json' --post-data \"{\\\"streamPath\\\":\\\"${MTX_PATH}\\\",\\\"segmentPath\\\":\\\"${MTX_SEGMENT_PATH}\\\",\\\"contentBase64\\\":\\\"$b64\\\"}\" http://blume_stream_ms:8080/internal/recordings/segment-complete >/dev/null 2>&1 || true"
 
   # ── Transcoded paths (FFmpeg re-publish with Opus audio) ─────────────────
-  "~^live/[a-zA-Z0-9]+_rtc$":
+  "~^live/[a-zA-Z0-9_-]+_rtc$":
     record: no
 
   all:
