@@ -24,7 +24,7 @@ pathDefaults:
 paths:
   # ── RTMP source paths (published by OBS with AAC audio) ──────────────────
   # Pattern matches any stream key: hex, numeric, UUID with hyphens, etc.
-  "~^live/[a-zA-Z0-9_-]+$":
+  "~^live/[a-zA-Z0-9-]+$":
     record: yes
     recordPath: /recordings/%path/%Y-%m-%d_%H-%M-%S
     recordFormat: fmp4
@@ -36,6 +36,7 @@ paths:
       -rtsp_transport tcp
       -i rtsp://127.0.0.1:8554/${MTX_PATH}
       -c:v copy
+      -c:v libx264 -preset veryfast -bf 0 -profile:v baseline
       -c:a libopus -b:a 128k -ar 48000 -ac 2
       -f rtsp rtsp://127.0.0.1:8554/${MTX_PATH}_rtc
     runOnReadyRestart: yes
